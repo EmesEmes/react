@@ -88,3 +88,103 @@ export default App;
 ```
 
 
+## Componentes
+Un componente en React es una unidad independiente de código que devuelve un elemento React (generalmente representado por JSX) que forma parte de la interfaz de usuario. Los componentes son la base de las aplicaciones React y permiten dividir la interfaz de usuario en piezas reutilizables e independientes.
+
+* Un componente tiene sus propios datos, lógica y apariencia.
+
+* Lo componentes deben retornar un solo bloque de JSX que React utilizará para renderizar te componente dentro de la UI.
+
+#### Propiedades de los componentes:
+1. Reutilizables: Los componentes pueden ser reutilizados en diferentes partes de una aplicación. Esto permite un desarrollo más rápido y un código más limpio y mantenible.
+
+2. Componibles: Los componentes pueden ser anidados dentro de otros componentes para construir interfaces de usuario complejas. Esto permite una estructura de aplicación clara y fácil de entender.
+
+3. Estado y Ciclo de Vida: Los componentes en React pueden tener estado interno y métodos de ciclo de vida (en componentes de clase) o hooks (en componentes funcionales) que permiten manejar la lógica de la aplicación de manera efectiva.
+
+4. Props: Los componentes pueden recibir props de sus componentes padres. Esto permite la comunicación entre componentes y hace que los componentes sean configurables para diferentes usos.
+
+5. JSX: Los componentes de React se suelen escribir con JSX, una extensión de sintaxis para JavaScript que permite escribir HTML en tu código JavaScript. Esto hace que los componentes sean más legibles y fáciles de escribir.
+
+6. Virtual DOM: React utiliza el Virtual DOM para hacer que el renderizado de los componentes sea más eficiente. Cuando el estado de un componente cambia, React solo actualiza las partes del DOM real que necesitan ser actualizadas, en lugar de volver a renderizar todo el componente.
+
+7. Unidireccionalidad de los datos: React sigue un patrón de flujo de datos unidireccional. Esto significa que un componente padre pasa las props a los componentes hijos, pero los componentes hijos no pueden modificar directamente las props que reciben. Esto hace que el flujo de datos sea más predecible y fácil de rastrear.
+
+
+## JSX
+JSX (JavaScript XML) es una extensión de sintaxis para JavaScript que se utiliza comúnmente en React para describir cómo debería ser la interfaz de usuario. Permite escribir HTML en el código JavaScript, lo que hace que el código sea más legible y fácil de entender.
+
+Es un sintaxis declarativa que describe como se verán los componentes y como funcionarán basado en su lógica y datos. Al decir que es una sintaxis declarativa se refiera a que usamos JSX para decirle a React como queremos que se vea la UI pero no como hacerlo paso a paso ya que React puede resolverlo por sí mismo.
+
+
+
+### Reglas generales de JSX
+1. JSX funciona escencialmente como HTML, pero podemos entrar en "modo JavaScript" usando {}.
+2. Dentro de {} podemos utilizar expresiones de JavaScript como por ejemplo: referenciar variables, crear arrays u objetos y utilizar sus respectivos métodos, operadores ternarios, etc. 
+3. Lo que no se puede usar dentro de {} son declaraciones de JavaScript como if/else, for, switch, etc.
+4. Lo más importante de entender es que JSX produce una expresión de JsvaScript, o entroas palabras, JSX is justamente como cualquier otra expresión de JavaScript.
+5. Esto tiene sentido ya que JSX es simplemete convertido a una llamada a la función "create-element", que es de hecho una expresión. esto tiene dos implicaciones:
+    1. Podemos colocar otras piezas de JSX dentro {}.
+    2. Podemos escribir JSX en cualquier lugar dentro de un componente.
+6. Una pieza de JSX puede retornar solamente un elemento de un componente, si se necesita retornar más de uno se debe usar `<React.Fragment>` o fragmento.
+
+> La principal diferencia expresiones y declaraciones es que una expresión produce un valor y puede ser utilizada en lugares donde se espera un valor, mientras que una declaración realiza una acción y no produce un valor directamente.
+
+#### Diferencia entre JSX y HTML
+1. Se debe usar `className` en lugar de `class`.
+2. Cada tag debe ser cerrado siempre. Por ejemplo `<img />` o `<br />`.
+3. Todos los controladores de eventos y otras propiedes deben ser escritas en **camelCase**. Por ejemplo `onClick` o `onMouseOver`. Con excepción de `aria-*` y `data-*` que son escritos con guiones como en HTML.
+4. El CSS en línea debe ser escrito así: `{{<style>}}`.
+5. Las propiedades de CSS también deben ser escritas en camelCase.
+6. Los comentarios deben ir dentro de {} ya que tambien son JavaScript.
+
+
+## Props
+Los props (abreviatura de propiedades) en React son la forma de pasar datos de los componentes padres a los componentes hijos. Son similares a los argumentos de una función en JavaScript puro.
+
+Los props son inmutables, lo que significa que un componente hijo no puede modificar los props que recibe de su componente padre. Esto es importante para mantener un flujo de datos unidireccional y predecible en tu aplicación.
+
+* Ejemplo de un prop:
+```javascript
+function Saludo(props) {
+  return <h1>Hola, {props.nombre}</h1>;
+}
+
+// Uso del componente
+<Saludo nombre="Mundo" />
+```
+
+Además de los datos, también se puede pasar funciones como props para permitir la comunicación de los componentes hijos con los componentes padres. Esto es útil para cosas como manejar eventos de usuario.
+
+
+## Fragments
+Un Fragment en React es un tipo de componente que permite agrupar una lista de hijos sin agregar nodos extra al DOM.
+
+Cuando se renderiza múltiples elementos a la vez, normalmente los se envuelve en un contenedor div. Pero a veces, envolver elementos en un div puede arruinar la semántica del HTML, especialmente en situaciones donde los elementos deben ser hijos directos de un elemento específico, como en una lista (`<ul>` o `<ol>`).
+
+Aquí es donde los Fragments son útiles. Se puede envolver múltiples elementos en un Fragment y React no agregará un nodo extra al DOM.
+
+```javascript
+import React, { Fragment } from 'react';
+
+function MiComponente() {
+  return (
+    <Fragment>
+      <h1>Mi título</h1>
+      <p>Mi párrafo</p>
+    </Fragment>
+  );
+}
+```
+
+También se puede usar una sintaxis más corta para los Fragments, que es simplemente <> y </>:
+```javascript
+function MiComponente() {
+  return (
+    <>
+      <h1>Mi título</h1>
+      <p>Mi párrafo</p>
+    </>
+  );
+}
+```
