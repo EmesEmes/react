@@ -188,3 +188,140 @@ function MiComponente() {
   );
 }
 ```
+
+
+## Manejar eventos en React
+Manejar eventos en React es muy similar a manejar eventos en el DOM. Sin embargo, hay algunas diferencias de sintaxis:
+
+1. Los nombres de los eventos son camelCase en lugar de minúsculas.
+2. Con JSX se pasa una función como el manejador del evento, en lugar de un string.
+
+Ejemplo: 
+```javascript
+function MiComponente() {
+  function handleClick() {
+    alert('Botón clickeado!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Haz clic aquí
+    </button>
+  );
+}
+```
+
+En este ejemplo, onClick es el evento que estamos manejando, y handleClick es la función que se ejecutará cuando se haga clic en el botón.
+
+__Algunas cosas importantes a tener en cuenta al manejar eventos en React son:__
+
+1. No se debe llamar a la función al pasarla al manejador del evento. En el ejemplo anterior, pasamos handleClick, no handleClick(). Si se hace, la función se ejecutará cada vez que se renderice el componente, no cuando se haga clic en el botón.
+
+2. El valor de `this` en los manejadores de eventos es undefined en las clases de JavaScript. Esto es diferente a cómo funcionan los manejadores de eventos en el DOM. Si se necesita acceder a `this` en un manejador de eventos en un componente de clase, se necesitará vincular la función o usar una función de flecha.
+
+3. Los eventos en React están "sintetizados". Esto significa que React no pasa el evento del DOM real a la función de manejo de eventos. En su lugar, pasa un objeto `SyntheticEvent` que se comporta de la misma manera que el evento del DOM. Esto se hace por razones de rendimiento y compatibilidad entre navegadores.
+
+### Eventos que soporta React
+1. __Eventos del ratón:__ onClick, onDoubleClick, onMouseDown, onMouseMove, onMouseUp, onMouseEnter, onMouseLeave, onMouseOver, onMouseOut.
+
+2. __Eventos del teclado:__ onKeyDown, onKeyPress, onKeyUp.
+
+3. __Eventos de formulario:__ onChange, onSubmit, onFocus, onBlur, onSelect.
+
+4. __Eventos de UI:__ onScroll, onWheel.
+
+5. __Eventos de arrastrar y soltar:__ onDrag, onDragEnd, onDragEnter, onDragExit, onDragLeave, onDragOver, onDragStart, onDrop.
+
+6. __Eventos de imagen:__ onLoad, onError.
+
+7. __Eventos de animación:__ onAnimationStart, onAnimationEnd, onAnimationIteration.
+
+8. __Eventos de transición:__ onTransitionEnd.
+
+Todos estos eventos se manejan de manera similar en React. Se pasan como props a los componentos y se les asigna una función que se ejecutará cuando ocurra el evento. 
+
+
+## Hooks
+
+Los Hooks son una característica introducida en React 16.8 que permite usar el estado y otras características de React sin escribir una clase. Los Hooks son funciones que permiten "enganchar" el estado de React y el ciclo de vida desde componentes funcionales.
+
+Los Hooks más comunes son `useState` y `useEffect`.
+
+1. `useState`: Este Hook te permite agregar estado a los componentes funcionales. Devuelve un par: el valor del estado actual y una función que te permite actualizarlo.
+```javascript
+const [contador, setContador] = useState(0);
+```
+
+2. `useEffect`: Este Hook te permite realizar efectos secundarios en los componentes funcionales. Se puedes pensar en useEffect Hook como componentDidMount, componentDidUpdate, y componentWillUnmount combinados.
+```javascript
+useEffect(() => {
+  document.title = `Has hecho clic ${contador} veces`;
+}, [contador]); // Solo se vuelve a ejecutar si `contador` cambia
+```
+
+Existen otros Hooks como useContext, useReducer, useCallback, useMemo, useRef, etc. Además, se puede crear tus propios Hooks personalizados para reutilizar la lógica del estado entre diferentes componentes.
+
+## State o Estado
+
+El "state" o estado en React es un objeto que almacena los valores que pueden cambiar a lo largo del tiempo y que pueden afectar el renderizado del componente. Cada componente puede tener su propio estado y este estado puede ser pasado como props a los componentos hijos.
+
+El estado se inicializa en el constructor de un componente de clase o utilizando el Hook useState en un componente funcional.
+
+Ejemplo de cómo se utiliza el estado en un componente de clase:
+
+```javascript 
+class MiComponente extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { contador: 0 };
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Has hecho clic {this.state.contador} veces</p>
+        <button onClick={() => this.setState({ contador: this.state.contador + 1 })}>
+          Haz clic en mí
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+Ejemplo de cómo se utiliza el estado en un componente funcional con el Hook useState:
+```javascript
+import React, { useState } from 'react';
+
+function MiComponente() {
+  const [contador, setContador] = useState(0);
+
+  return (
+    <div>
+      <p>Has hecho clic {contador} veces</p>
+      <button onClick={() => setContador(contador + 1)}>
+        Haz clic en mí
+      </button>
+    </div>
+  );
+}
+```
+
+En ambos ejemplos, el estado se utiliza para almacenar el número de veces que se ha hecho clic en un botón. Cada vez que se hace clic en el botón, se actualiza el estado, lo que provoca que el componente se vuelva a renderizar con el nuevo valor del contador.
+
+El estado en React es una característica muy importante que permite a los componentes ser dinámicos y reactivos a los cambios de datos. Aquí hay algunos puntos adicionales sobre el estado en React:
+
+1. __El estado es local y encapsulado:__ El estado definido en un componente no es accesible directamente desde otros componentos a menos que se pase explícitamente como props.
+
+2. __Las actualizaciones de estado pueden ser asincrónicas:__ React puede agrupar varias llamadas a setState en un solo cambio para mejorar el rendimiento. Por lo tanto, no se debe confiar en los valores actuales del estado para calcular el próximo estado. En su lugar, se puede usar una forma alternativa de setState que acepta una función en lugar de un objeto.
+
+3. __Las actualizaciones de estado provocan un nuevo renderizado:__ Cuando el estado de un componente cambia, React re-renderiza ese componente y todos los componentes hijos. Sin embargo, esto no significa que el DOM se actualice para cada cambio de estado. React utiliza un algoritmo de reconciliación para determinar qué cambios en el DOM son necesarios para reflejar el nuevo estado.
+
+4. __Nunca debes modificar el estado directamente__ (excepto en el constructor de un componente de clase). En su lugar, debes usar setState en componentes de clase o el setter devuelto por useState en componentes funcionales.
+
+5. __El estado puede contener cualquier tipo de datos:__ números, cadenas, arrays, objetos, booleanos, etc. Sin embargo, en los componentes de clase, el estado debe ser un objeto.
+
+6. __Los componentes sin estado son más fáciles de probar y entender:__ Los componentes sin estado son componentes que no tienen su propio estado. Reciben todos sus datos a través de props. Estos componentes son más fáciles de probar y entender porque su salida depende únicamente de sus props y no de algún estado interno.
+
+7. El estado inicial se especifica con un prop especial llamado defaultProps en componentes de clase o dentro de la función useState en componentes funcionales.
+
