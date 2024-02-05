@@ -325,3 +325,54 @@ El estado en React es una característica muy importante que permite a los compo
 
 7. El estado inicial se especifica con un prop especial llamado defaultProps en componentes de clase o dentro de la función useState en componentes funcionales.
 
+
+## Estado vs. Props
+`Estado`: Son datos internos, que son propiedad del componente en el que se declara, al estado se puede considerar como la memoria del componente, ya que puede mantener los datos a lo largo del tiempo,es decir, a través de múltiples re-renderizaciones. El estado puede ser actualizado por el propio componente y esto hará que el componente sea re-renderizado por React. Por lo tanto, utilizamos este mecanismo de estado para que los componentes sean interactivos.
+
+`Props`: Son datos externos, que son propiedad del componente padre, y se puede pensar en ellos como parámetro de la función. Como un canal de comunicación entre componentes padres e hijos donde los padres pueden pasar datos a los hijos. Son solo de lectura, por lo que no pueden ser modificados por el componente que los recibe, sin embargo, cuando el componente hijo recibe nuevos props actualizados, hará que el componente vuelva a renderizar.
+
+Cuando quiera que un pedazo de estado es pasado como prop, cuando ese estado se actualice, los dos componentes son re-renderizados, así que, tanto el componente dueño del estado como el componente que recibe el estado como prop se re-renderizan. Esta es un conexión enter estado y props que siempre se debe tener en cuenta.
+
+
+## Elementos controlados(Controlled Elements)
+Los elementos controlados en React son elementos de formulario como `<input>`, `<textarea>` y `<select>` cuyo valor es controlado por el estado del componente de React. En lugar de permitir que el DOM maneje el estado del formulario, los elementos controlados tienen su estado manejado por un componente de React.
+
+Los elementos controlados son útiles porque permiten validar o manipular los datos del usuario antes de que se guarden en el estado. También facilitan la pre-población de los campos de entrada con valores predeterminados o existentes.
+
+Ejemplo de un elemento controlado en React:
+```javascript
+import React, { useState } from 'react';
+
+function MiFormulario() {
+  const [nombre, setNombre] = useState('');
+
+  const manejarCambio = (evento) => {
+    setNombre(evento.target.value);
+  };
+
+  return (
+    <form>
+      <label>
+        Nombre:
+        <input type="text" value={nombre} onChange={manejarCambio} />
+      </label>
+      <input type="submit" value="Enviar" />
+    </form>
+  );
+}
+```
+
+Aquí hay algunos puntos adicionales que se debe saber sobre los elementos controlados en React:
+
+1. __Manejo de eventos:__ En los elementos controlados, el manejo de eventos se realiza en el código de React. Por ejemplo, cada vez que el estado de un campo de entrada cambia, se llama a una función manejadora de eventos que actualiza el estado del componente.
+
+2. __Valor de los elementos:__ En los elementos controlados, el valor de los elementos del formulario se deriva del estado del componente. Esto significa que puedes acceder y modificar el valor de un elemento de formulario en cualquier momento, simplemente actualizando el estado del componente.
+
+3. __Validación de formularios:__ Los elementos controlados facilitan la validación de los datos del formulario antes de que se envíen. Puedes verificar el estado del componente en cualquier momento para asegurarte de que los datos del formulario cumplen con tus requisitos antes de permitir que el usuario envíe el formulario.
+
+4. __Formularios prellenados:__ Los elementos controlados facilitan la creación de formularios prellenados. Simplemente establece el estado inicial del componente a los datos prellenados.
+
+5. __Integración con otras bibliotecas de UI:__ Algunas bibliotecas de UI requieren que los elementos del formulario sean controlados. Esto es porque necesitan un control preciso sobre el valor y el manejo de eventos de los elementos del formulario.
+
+6. __Rendimiento:__ En formularios muy grandes, los elementos controlados pueden ser menos eficientes que los elementos no controlados, ya que cada cambio de estado provoca un re-renderizado del componente. Sin embargo, en la mayoría de los casos, la diferencia de rendimiento es insignificante.
+
