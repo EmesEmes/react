@@ -49,6 +49,26 @@ npx create-gatsby
 
 # Consideraciones a tener en cuenta para emprezar con React
 
+## "Pensar en React"
+
+Construir aplicaciones de React requiere una nueva mentalidad ya que es simplemente una manera distinta de crear aplicaciones a como se hace utilizando Vanilla JavaScript, por eso, en ordén de crear aplicaciones con React, no solamente debemos aprender a como trabajar como al API de React sino que también debemos ser capaces de "pensar en React".
+
+Pensar en React se refiere a la capacidad de de distinguir __cómo y cuándo__ utilizar todas las herramientas que nos ofrece React (componentes, estado, props, flujo de datos, efectos, etc). También se trata acerca de pensar siempre en términos de "transición de datos" en lugar de mutación de elementos.
+
+Pensar en React se puede definir como un proceso que nos ayuda a estructurar mejor nuestros proyectos siguiendo los siguientes pasos: 
+1. Romper la UI en componentes y establecer como estos componentes están relacionado los unos con los otros (árbol de componentes), esto incluye pensar en la reusabilidad y la componibilidad de los componentes.
+
+2. Construir una versión estática de la aplicación (sin ningún estado o interactividad).
+
+3. Pensar acerca del estado (cuándo usarlo, qué tipo de estado [local o global], dónde colocar el estado).
+
+4. Establecer el flujo de los datos (flujo de datos unidireccional, comunicación entre padres e hijos, acceso al estado global).
+
+A los puntos 3 y 4 es lo que se conoce como "manejo del estado" (state management).
+
+
+
+
 ## react-dom
 react-dom es una biblioteca de React que proporciona métodos específicos del DOM que pueden ser utilizados en el nivel más alto de tu aplicación como una forma de arrancar un árbol de componentes de React en un contenedor del DOM.
 
@@ -261,7 +281,7 @@ useEffect(() => {
 
 Existen otros Hooks como useContext, useReducer, useCallback, useMemo, useRef, etc. Además, se puede crear tus propios Hooks personalizados para reutilizar la lógica del estado entre diferentes componentes.
 
-## State o Estado
+# State o Estado
 
 El "state" o estado en React es un objeto que almacena los valores que pueden cambiar a lo largo del tiempo y que pueden afectar el renderizado del componente. Cada componente puede tener su propio estado y este estado puede ser pasado como props a los componentos hijos.
 
@@ -317,7 +337,7 @@ El estado en React es una característica muy importante que permite a los compo
 
 3. __Las actualizaciones de estado provocan un nuevo renderizado:__ Cuando el estado de un componente cambia, React re-renderiza ese componente y todos los componentes hijos. Sin embargo, esto no significa que el DOM se actualice para cada cambio de estado. React utiliza un algoritmo de reconciliación para determinar qué cambios en el DOM son necesarios para reflejar el nuevo estado.
 
-4. __Nunca debes modificar el estado directamente__ (excepto en el constructor de un componente de clase). En su lugar, debes usar setState en componentes de clase o el setter devuelto por useState en componentes funcionales.
+4. __Nunca se debe modificar el estado directamente__ (excepto en el constructor de un componente de clase). En su lugar, debes usar setState en componentes de clase o el setter devuelto por useState en componentes funcionales.
 
 5. __El estado puede contener cualquier tipo de datos:__ números, cadenas, arrays, objetos, booleanos, etc. Sin embargo, en los componentes de clase, el estado debe ser un objeto.
 
@@ -329,10 +349,38 @@ El estado en React es una característica muy importante que permite a los compo
 ## Estado vs. Props
 `Estado`: Son datos internos, que son propiedad del componente en el que se declara, al estado se puede considerar como la memoria del componente, ya que puede mantener los datos a lo largo del tiempo,es decir, a través de múltiples re-renderizaciones. El estado puede ser actualizado por el propio componente y esto hará que el componente sea re-renderizado por React. Por lo tanto, utilizamos este mecanismo de estado para que los componentes sean interactivos.
 
-`Props`: Son datos externos, que son propiedad del componente padre, y se puede pensar en ellos como parámetro de la función. Como un canal de comunicación entre componentes padres e hijos donde los padres pueden pasar datos a los hijos. Son solo de lectura, por lo que no pueden ser modificados por el componente que los recibe, sin embargo, cuando el componente hijo recibe nuevos props actualizados, hará que el componente vuelva a renderizar.
+`Props`: Son datos externos, que son propiedad del componente padre, y se puede pensar en ellos como parámetro de la función. Como un canal de comunicación entre componentes padres e hijos donde los padres pueden pasar datos a los hijos. Son solo de lectura, por lo que no pueden ser modificados por el componente que los recibe, sin embargo, cuando el componente hijo recibe nuevos props actualizados, hará que el componente vuelva a renderizar. Los props son utilizados para dar al componente padre la habilidad de configurar sus componentes hijos.
 
 Cuando quiera que un pedazo de estado es pasado como prop, cuando ese estado se actualice, los dos componentes son re-renderizados, así que, tanto el componente dueño del estado como el componente que recibe el estado como prop se re-renderizan. Esta es un conexión enter estado y props que siempre se debe tener en cuenta.
 
+
+
+## Manejo del estado (State management)
+El manejo del estado en React se refiere a la forma en que se almacenan, se modifican y se utilizan los datos en una aplicación. En React, el estado es un objeto que almacena los valores que pueden cambiar con el tiempo y que pueden afectar el renderizado del componente.
+
+Es decidir cuándo necesitamos crear un estado, qué tipo de estado necesitamos, dónde colocar cada estado dentro de nuestro código base, y también, cómo todos los datos deben fluir a través de la aplicación.
+
+
+### Estado local vs. Estado global
+
+#### Estado local:
+1. Es un estado que es necesitado solamente por uno o pocos componentes como los componentes hijos o hermanos.
+2. Creamos el estado local simplemente usando la función `useState` dentro de cierto componente. Ese estado es unicamente accesible para ese componente y a sus componentes hijos si lo pasamos a través de props.
+
+
+#### Estado global:
+1. También conocido como "estado compartido", es un estado que muchos componentes pueden llegar a necesitarlo.
+2. Este estado puede ser accesible para todos los componentes en toda la aplicación.
+3. Podemos definir el estado global utilizando `Context API` que nos ofrece React o podemos utilizar una librería externa de manejo del estado global como `Redux`.
+
+### Cómo y Cuándo utilizar el estado
+![como y cunado usar el estado](images/como-y-cuando-estado.png)
+
+
+## "Lift State Up"
+"Lift State Up" es un patrón común en React que se utiliza cuando varios componentes necesitan compartir y manipular los mismos datos. En lugar de duplicar el estado en varios componentes, el estado se "eleva" al componente padre más cercano que necesita los datos. Luego, el estado se pasa a los componentes hijos como props.
+
+Este patrón es útil porque mantiene el estado en un solo lugar, lo que facilita la depuración y evita problemas de sincronización de estado. Sin embargo, puede hacer que los componentes superiores se vuelvan demasiado complejos si manejan demasiado estado. En esos casos, podrías considerar usar una biblioteca de manejo de estado como Redux o Context API.
 
 ## Elementos controlados(Controlled Elements)
 Los elementos controlados en React son elementos de formulario como `<input>`, `<textarea>` y `<select>` cuyo valor es controlado por el estado del componente de React. En lugar de permitir que el DOM maneje el estado del formulario, los elementos controlados tienen su estado manejado por un componente de React.
