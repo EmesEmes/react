@@ -382,6 +382,20 @@ Es decidir cuándo necesitamos crear un estado, qué tipo de estado necesitamos,
 
 Este patrón es útil porque mantiene el estado en un solo lugar, lo que facilita la depuración y evita problemas de sincronización de estado. Sin embargo, puede hacer que los componentes superiores se vuelvan demasiado complejos si manejan demasiado estado. En esos casos, podrías considerar usar una biblioteca de manejo de estado como Redux o Context API.
 
+
+## "Child-to-Parent Communication"
+La comunicación de hijo a padre en React se refiere a la forma en que un componente hijo puede enviar datos de vuelta a su componente padre. Esto se hace generalmente a través de funciones.
+
+En React, los datos fluyen de arriba hacia abajo (del padre al hijo) a través de las props. Sin embargo, si un componente hijo necesita enviar datos al padre, el componente padre puede pasar una función al hijo a través de las props. Luego, el componente hijo puede llamar a esta función y pasarle los datos que necesita enviar al padre.
+
+
+## Derived State
+El estado derivado en React se refiere a la práctica de derivar el estado de un componente a partir de los cambios en las props. Esto es útil cuando se necesita sincronizar algunos de los estados de un componente con los cambios en las props.
+
+Es importante tener en cuenta que el estado derivado puede hacer que el componente sea más difícil de entender y mantener, ya que introduce una fuente adicional de verdad. En general, es mejor evitar el estado derivado si se puede calcular los valores que se necesitan durante el renderizado, o si se puede mantener los datos sincronizados utilizando el ciclo de vida del componente o los efectos.
+
+
+
 ## Elementos controlados(Controlled Elements)
 Los elementos controlados en React son elementos de formulario como `<input>`, `<textarea>` y `<select>` cuyo valor es controlado por el estado del componente de React. En lugar de permitir que el DOM maneje el estado del formulario, los elementos controlados tienen su estado manejado por un componente de React.
 
