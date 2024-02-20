@@ -309,6 +309,7 @@ class MiComponente extends React.Component {
 }
 ```
 
+
 Ejemplo de cómo se utiliza el estado en un componente funcional con el Hook useState:
 ```javascript
 import React, { useState } from 'react';
@@ -387,6 +388,27 @@ Este patrón es útil porque mantiene el estado en un solo lugar, lo que facilit
 La comunicación de hijo a padre en React se refiere a la forma en que un componente hijo puede enviar datos de vuelta a su componente padre. Esto se hace generalmente a través de funciones.
 
 En React, los datos fluyen de arriba hacia abajo (del padre al hijo) a través de las props. Sin embargo, si un componente hijo necesita enviar datos al padre, el componente padre puede pasar una función al hijo a través de las props. Luego, el componente hijo puede llamar a esta función y pasarle los datos que necesita enviar al padre.
+
+## "Children Prop"
+La prop children en React es una prop especial que se utiliza para pasar componentes hijos a otros componentes en forma de props.
+
+En JSX, todo lo que se coloca entre las etiquetas de apertura y cierre de un componente se pasa al componente como una prop children. Esto te permite componer componentes de manera que puedan contener cualquier tipo de contenido, no solo texto estático, sino también otros componentes de React.
+
+```javascript
+function MiComponente({ children }) {
+  return <div>{children}</div>;
+}
+
+function App() {
+  return (
+    <MiComponente>
+      <h1>Hola, mundo!</h1>
+      <p>Bienvenido a mi aplicación.</p>
+    </MiComponente>
+  );
+}
+```
+La prop children es muy útil para crear componentes de "contenedor" o "envoltorio" que no necesitan saber qué contenido van a mostrar.
 
 
 ## Derived State
