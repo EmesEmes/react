@@ -410,6 +410,41 @@ function App() {
 ```
 La prop children es muy útil para crear componentes de "contenedor" o "envoltorio" que no necesitan saber qué contenido van a mostrar.
 
+## Element prop 
+En React, una "element prop" es una propiedad que se pasa a un componente y cuyo valor es un elemento de React. Un elemento de React es un objeto que describe lo que se quiere renderizar en el DOM.
+
+```javascript
+function MiComponente({ element }) {
+  return <div>{element}</div>;
+}
+
+function App() {
+  return (
+    <MiComponente element={<h1>Hola, mundo!</h1>} />
+  );
+}
+```
+
+### PropTypes
+PropTypes en React es una forma de hacer un tipo de "verificación de tipos" en tiempo de ejecución para los props que un componente recibe. Esto puede ayudar a detectar errores y problemas en el código, especialmente en aplicaciones grandes y complejas.
+
+```javascript
+import PropTypes from 'prop-types';
+
+function MiComponente({ nombre, edad }) {
+  return (
+    <div>
+      <p>Nombre: {nombre}</p>
+      <p>Edad: {edad}</p>
+    </div>
+  );
+}
+
+MiComponente.propTypes = {
+  nombre: PropTypes.string.isRequired,
+  edad: PropTypes.number.isRequired,
+};
+```
 
 ## Derived State
 El estado derivado en React se refiere a la práctica de derivar el estado de un componente a partir de los cambios en las props. Esto es útil cuando se necesita sincronizar algunos de los estados de un componente con los cambios en las props.
