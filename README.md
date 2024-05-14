@@ -115,6 +115,12 @@ Un componente en React es una unidad independiente de código que devuelve un el
 
 * Lo componentes deben retornar un solo bloque de JSX que React utilizará para renderizar te componente dentro de la UI.
 
+> La instancia de un componente es creada cuando usamos un componente, React internamente hará la llamada a "MiComponente()", se puede decir que es la manifestación "física" de un componente y tiene su propio estado y props. La instancia de un componente tiene un ciclo de vida(puede "nacer", "vivir" y "morir").
+
+> Los conceptos de Componente e Instancia de componente suele ser usados indistintamente. Por ejemplo, se dice que una UI esta compuesta por componentes y no por instancias de componentes, que sería realmente de lo que está compuesto.
+
+> JSX es convertido en una función React.createElement(). Un Elemento React es el resultado de la llamada de esa función. En palabras simples es un objeto JavaScript inmutable que React mantiene en memoria. Un Elemento React básicamente contiene toda la información que es necesaria en orden de crear elementos en el DOM para la instancia del componente actual. Este Elemento React eventualmente será convertido a un elemento del DOM, y pintado en pantalla por el navegador.
+
 #### Propiedades de los componentes:
 1. Reutilizables: Los componentes pueden ser reutilizados en diferentes partes de una aplicación. Esto permite un desarrollo más rápido y un código más limpio y mantenible.
 
@@ -158,6 +164,55 @@ Es un sintaxis declarativa que describe como se verán los componentes y como fu
 5. Las propiedades de CSS también deben ser escritas en camelCase.
 6. Los comentarios deben ir dentro de {} ya que tambien son JavaScript.
 
+
+## Cómo funciona el renderiazado en react
+Mientras contruimos una aplicación React, lo que realmente se hace es construir componentes, luego podemos usar esos componentes dentro de otros componentes tantas veces como deseemos lo que hará que React cree uno o más instancias de componente de cada componente.
+
+Mientras React llama cada instancia de componente, cada JSX producirá varias llamadas de función de React.createElement() que dará como resultado un Elemento React por cada Instancia de Componente. Y finalmente, estos Elementos React serán transformados en Elementos del DOM y mostrados en pantalla como la interfaz de usuario.
+
+![renderizado en React](images/renderizado.png)
+
+> Es importante notar que en React, el "renderizado" no significa necesariamente actualizar el DOM o mostrar elementos en la pantalla. El renderizado ocurre internamente en React, y no produce cambios visuales por sí mismo. Los cambios visuales ocurren cuando React actualiza el DOM basado en los resultados del renderizado.
+
+### Fases del renderizado
+1. `Fase de Desencadenamiento del renderizado:` Hay dos maneras de activar el renderizado, la primera se produce la primera vez que la aplicación se ejecuta y es conocido como el renderizado inicial, y la segunda es cuando ocurre un actualización de estado en uno mas más instancia de componente en algún lugar de la aplicación y es lo que llamamos en re-renderizado.
+
+> El proceso de renderizado es activado for la aplicación entera y no solo por un único componente.
+
+2. `Fase de Renderizado:` Después de activar un renderizado, React llama a los componentes para averiguar qué mostrar en la pantalla. Un «renderizado» consiste en que React haga una llamada a los componentes. React llamará al componente de función cuya actualización de estado desencadenó el renderizado. Durante un rerenderizado, React calculará cuáles de sus propiedades, si es que hay alguna, han cambiado desde el renderizado anterior. No hará nada con esa información hasta el siguiente paso, la fase de confirmación.
+
+> Este proceso es recursivo: si el componente actualizado devuelve algún otro componente, React renderizará ese componente a continuación, y si ese componente también devuelve algo, renderizará ese componente a continuación, y así sucesivamente. El proceso continuará hasta que no haya más componentes anidados y React sepa exactamente qué debe mostrarse en pantalla.
+
+3. `Fase de Confirmación:` Después de renderizar (llamar) los componentes, React modificará el DOM insertando, eliminando y actualizando elementos. La fase de confirmación es sincrónica, lo que significa que no puede ser interrumpida, esto es necesario para que el DOM nunca muestre resultados parciales, asegurando la consistencia de la UI. 
+
+> Esta fase no es realizada por React, sino por una librería aparte llamada ReactDOM. La fase de confirmación se hace a través de los "renderers" (ReactDOM, React Navtive, Remotion, etc) que son utilizados para pintar los componentes. 
+
+4. `Pintado en el navegador:` El navegador se dará cuenta que el DOM ha sido cambiado, y como resultado, repintará la UI. Aquí es donde las actualizaciones del DOM son finalmente visibles al usuario en forma de una actualización de la UI.
+
+> React no toca el DOM si el resultado del renderizado es el mismo que la última vez
+
+![renderizado en React](images/fases-de-renderizado.png)
+
+### Reconciliación
+La reconciliación en React es el proceso por el cual React actualiza el DOM. Cuando el estado de un componente cambia, React necesita determinar cómo actualizar la interfaz de usuario para reflejar ese cambio. Esto se hace a través del proceso de reconciliación. Los pasos básicos de la reconciliación son:
+
+1. Cuando se produce un cambio en el estado o las props de un componente, React genera un nuevo árbol de elementos React.
+
+2. React compara este nuevo árbro con el árbol anterior (el árbol actualmente en el DOM)
+
+3. React calcula la "diferencia mínima" entre los dos árboles (esto se conoce como "diffing").
+
+4. React realiza las actualizaciones mínimas necesarias en el DOM para llevar el DOM al estado representado por el nuevo árbol de elementos.
+
+
+### Diffing 
+El "Diffing" es el proceso que React utiliza para comparar el árbol de elementos actual con el nuevo árbol de elementos cuando se produce una actualización. Este proceso permite a React determinar qué partes del DOM necesitan ser actualizadas, lo que resulta en una actualización más eficiente del DOM. React realiza el "Diffing" en dos pasos:
+
+1. `Diffing de elementos:` React primero compara dos elementos del mismo nivel en el árbol. Si los elementos son de diferentes tipos, React asume que la estructura del árbol ha cambiado significativamente y procede a reconstruir el árbol desde ese punto. Si los elementos son del mismo tipo, React mantiene el mismo nodo del DOM y solo actualiza las propiedades cambiadas.
+
+2. `Diffing de componentes:` Si los elementos son componentes, React llama al método render del componente para obtener el nuevo árbol de elementos. Luego, compara el nuevo árbol de elementos con el antiguo para determinar las actualizaciones necesarias.
+
+> Este proceso de "Diffing" permite a React realizar actualizaciones mínimas al DOM, lo que mejora el rendimiento de la aplicación.
 
 ## Props
 Los props (abreviatura de propiedades) en React son la forma de pasar datos de los componentes padres a los componentes hijos. Son similares a los argumentos de una función en JavaScript puro.
@@ -350,11 +405,6 @@ El estado en React es una característica muy importante que permite a los compo
 ## Estado vs. Props
 `Estado`: Son datos internos, que son propiedad del componente en el que se declara, al estado se puede considerar como la memoria del componente, ya que puede mantener los datos a lo largo del tiempo,es decir, a través de múltiples re-renderizaciones. El estado puede ser actualizado por el propio componente y esto hará que el componente sea re-renderizado por React. Por lo tanto, utilizamos este mecanismo de estado para que los componentes sean interactivos.
 
-`Props`: Son datos externos, que son propiedad del componente padre, y se puede pensar en ellos como parámetro de la función. Como un canal de comunicación entre componentes padres e hijos donde los padres pueden pasar datos a los hijos. Son solo de lectura, por lo que no pueden ser modificados por el componente que los recibe, sin embargo, cuando el componente hijo recibe nuevos props actualizados, hará que el componente vuelva a renderizar. Los props son utilizados para dar al componente padre la habilidad de configurar sus componentes hijos.
-
-Cuando quiera que un pedazo de estado es pasado como prop, cuando ese estado se actualice, los dos componentes son re-renderizados, así que, tanto el componente dueño del estado como el componente que recibe el estado como prop se re-renderizan. Esta es un conexión enter estado y props que siempre se debe tener en cuenta.
-
-
 
 ## Manejo del estado (State management)
 El manejo del estado en React se refiere a la forma en que se almacenan, se modifican y se utilizan los datos en una aplicación. En React, el estado es un objeto que almacena los valores que pueden cambiar con el tiempo y que pueden afectar el renderizado del componente.
@@ -388,6 +438,21 @@ Este patrón es útil porque mantiene el estado en un solo lugar, lo que facilit
 La comunicación de hijo a padre en React se refiere a la forma en que un componente hijo puede enviar datos de vuelta a su componente padre. Esto se hace generalmente a través de funciones.
 
 En React, los datos fluyen de arriba hacia abajo (del padre al hijo) a través de las props. Sin embargo, si un componente hijo necesita enviar datos al padre, el componente padre puede pasar una función al hijo a través de las props. Luego, el componente hijo puede llamar a esta función y pasarle los datos que necesita enviar al padre.
+
+# Props
+Son datos externos, que son propiedad del componente padre, y se puede pensar en ellos como parámetro de la función. Como un canal de comunicación entre componentes padres e hijos donde los padres pueden pasar datos a los hijos. Son solo de lectura, por lo que no pueden ser modificados por el componente que los recibe, sin embargo, cuando el componente hijo recibe nuevos props actualizados, hará que el componente vuelva a renderizar. Los props son utilizados para dar al componente padre la habilidad de configurar sus componentes hijos.
+
+Cuando quiera que un pedazo de estado es pasado como prop, cuando ese estado se actualice, los dos componentes son re-renderizados, así que, tanto el componente dueño del estado como el componente que recibe el estado como prop se re-renderizan. Esta es un conexión enter estado y props que siempre se debe tener en cuenta.
+
+## Key prop
+El prop key en React es una propiedad especial que se debe incluir al crear listas de elementos. React utiliza las keys para identificar qué elementos han cambiado, se han añadido o se han eliminado.
+
+Las keys ayudan a React a identificar los elementos de manera única en el DOM y a realizar el "reconciliation" (proceso de comparación y actualización del DOM virtual con el DOM real) de manera más eficiente. Y permite a React distinguir entre multiples instancias del mismo tipo de componente.
+
+Es importante no usar el índice del array como key si el orden de los elementos puede cambiar. Esto puede afectar negativamente el rendimiento y puede causar problemas con el estado del componente.
+
+> La prop key en React puede ser utilizada para reiniciar el estado de un componente. Cuando el valor de la key cambia, React desmonta el componente y lo vuelve a montar, lo que reinicia su estado.
+
 
 ## "Children Prop"
 La prop children en React es una prop especial que se utiliza para pasar componentes hijos a otros componentes en forma de props.
