@@ -560,3 +560,152 @@ Aquí hay algunos puntos adicionales que se debe saber sobre los elementos contr
 
 6. __Rendimiento:__ En formularios muy grandes, los elementos controlados pueden ser menos eficientes que los elementos no controlados, ya que cada cambio de estado provoca un re-renderizado del componente. Sin embargo, en la mayoría de los casos, la diferencia de rendimiento es insignificante.
 
+## Ciclo de vida de la instancia de un componente
+El ciclo de vida de un componente basicamente engloba las diferentes fases que una instancia de un componente específica tiene que recorrer en el tiempo. Podemos escribir código para que se ejecute en un momento de vida específico.
+
+1. `Montaje - renderizado inicial:` En esta fase, el componente es creado y renderizado en el DOM. 
+
+2. `Actualización (Updating):` Esta fase ocurre cuando cambian las props o el estado del componente ocacionando un re-renderizado. También puede actualizarse cuando el componente padre se re-renderiza o el contexto cambia. Esta fase es opcional no todos los componentes se actualizan, solo se montan y después se desmontan. 
+
+3. `Desmontaje (Unmounting):` En esta fase, el componente se está eliminando del DOM. El componente es completamente destruido y removido de la pantalla junto con sus props y estados.
+
+
+### Side effects
+Un "side effect" o efecto secundario en programación se refiere a cualquier operación que modifica el estado de la computadora fuera de la función o unidad de código actual. En otras palabras, un efecto secundario es cualquier cosa que una función hace que no sea calcular su valor de retorno.
+
+Un side effect se refiere a cualquier acción que ocurre dentro de una función o método y afecta algo fuera de esa función.
+
+En React, se busca que los componentes sean puramente funcionales, es decir, que su renderización dependa únicamente de sus entradas (props) y que no produzcan efectos secundarios. Sin embargo, en muchas ocasiones, es necesario realizar operaciones que van más allá de simplemente renderizar contenido en la interfaz de usuario.
+
+En React, los efectos secundarios son acciones que un componente realiza que tienen un impacto fuera de la renderización en sí misma. Algunos ejemplos de efectos secundarios en React incluyen:
+
+* Realizar un solicitud de red (fetch)
+* Manipular el DOM directamente
+* Leer o escribir en el localStorage
+* Configurar un temporizador o intervalo
+* Registrar o desregistrar un manejador de eventos
+* Modificar una variable fuera del alcance de la función
+
+En resumen, los side effects son acciones que ocurren en paralelo con la ejecución principal del programa y pueden tener consecuencias más allá de la función en la que se encuentran.
+
+> No se debe setear el estado en el fetch ya que ocacionará un loop infinito de llamadas a la api, se hará el fetch a la api ocacionando que el componente sea renderizado nuevamente y en el re-renderizado le llamará otra vez a la api y así infinitamente.
+
+# useEffect
+Es un hook de React que permite realizar efectos secundarios en componentes funcionales. Los efectos secundarios pueden ser cualquier operación asíncrona o síncrona que no esté directamente relacionada con el renderizado del componente, como la suscripción a eventos, el manejo de temporizadores, las llamadas a APIs, la modificación del DOM, entre otros.
+
+La función useEffect se ejecuta después de que el renderizado del componente haya finalizado. Se puede utilizarlo para ejecutar código después de que el componente se haya montado, actualizado o desmontado. Esto proporciona un lugar conveniente para realizar tareas que no deberían interferir con el ciclo de renderizado del componente, como la limpieza de recursos, la suscripción a eventos o la actualización de datos.
+
+El hook useEffect acepta dos argumentos:
+1. `Función efecto:` Esta función contiene el código que deseas ejecutar como efecto secundario. Puede ser una función síncrona o asíncrona.
+2. `Array de dependencias (opcional):` Este array especifica las dependencias del efecto. Si alguna de estas dependencias cambia entre renderizados, el efecto se volverá a ejecutar. Si se omite este array, el efecto se ejecutará después de cada renderizado.
+
+Es importante recordar que se debe manejar la limpieza de tu efecto si es necesario. Por ejemplo, si el efecto registra un manejador de eventos, se debe desregistrar ese manejador de eventos cuando el componente se desmonte. Se puede hacer esto devolviendo una función de limpieza de tu efecto.
+
+## Manejo de errores 
+Para manejar errores dentro de un efecto creado con useEffect, puedes usar un bloque try/catch dentro de la función efecto o puedes utilizar un segundo argumento de useEffect para manejar los errores de manera más específica.
+
+Ejemplo:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Ejemplo() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://api.example.com/data');
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    fetchData();
+  }, []); // Array de dependencias vacío significa que el efecto se ejecuta solo una vez al montar el componente
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return data ? <div>{JSON.stringify(data)}</div> : <div>Cargando...</div>;
+}
+```
+En este ejemplo, si la solicitud fetch falla por alguna razón (por ejemplo, la red está inactiva, la URL es incorrecta, etc.), el error se captura en el bloque catch y se guarda en el estado. Luego, en el cuerpo del componente, se verifica si hay un error y, si lo hay, se muestra un mensaje de error.
+
+> Es importante tener en cuenta que este método solo captura errores que ocurren dentro de la función de efecto. No capturará errores que ocurran en otros lugares del componente. Para capturar y manejar errores en toda la jerarquía de componentes, se puede usar un componente de límite de error (Error Boundary).
+
+## Array de dependencias
+El array de dependencias es un argumento opcional que se pasa a useEffect en React. Este array le dice a React qué variables debe observar el efecto para determinar cuándo debe ejecutarse nuevamente.
+
+Cuando proporcionas un array de dependencias, React compara los valores anteriores de esas dependencias con los valores actuales. Si alguna de las dependencias ha cambiado desde la última ejecución del efecto, React ejecutará el efecto nuevamente. Si ninguna de las dependencias ha cambiado, React omitirá la ejecución del efecto.
+
+Esto es útil para optimizar el rendimiento y evitar ejecuciones innecesarias del efecto. Por ejemplo, si se tiene un efecto que necesita ejecutarse solo cuando un cierto estado cambia, puedes especificar ese estado como una dependencia. De esta manera, el efecto solo se ejecutará cuando ese estado específico cambie.
+
+Si se omite el array de dependencias, el efecto se ejecutará después de cada renderizado del componente (montaje). Esto puede ser útil para efectos que no dependen de ningún valor y deben ejecutarse en cada renderizado, como suscripciones a eventos globales o la realización de operaciones de limpieza.
+
+Es importante tener en cuenta que el array de dependencias debe contener valores inmutables o funciones que no cambien durante el ciclo de vida del componente. Si se proporciona objetos o arrays mutables como dependencias, es posible que se experimente comportamientos inesperados, ya que React comparará las referencias en lugar de los valores reales. En esos casos, se recomienda utilizar el hook useCallback o useMemo para crear versiones memorizadas de esos valores.
+
+Ejemplo: 
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Ejemplo() {
+  const [contador, setContador] = useState(0);
+
+  useEffect(() => {
+    document.title = `Has hecho clic ${contador} veces`;
+  }, [contador]); // Aquí, contador es una dependencia
+
+  return (
+    <div>
+      <p>Has hecho clic {contador} veces</p>
+      <button onClick={() => setContador(contador + 1)}>
+        Haz clic en mí
+      </button>
+    </div>
+  );
+}
+```
+En este ejemplo, el efecto se ejecuta cada vez que el valor de contador cambia.
+
+> Se puede agregar a la lista de dependencias cualquier valor que pueda cambiar y que se desee que el efecto observe para determinar cuándo debe ejecutarse nuevamente., como variables de estado(useState), props, variables locales, funciones o referencias a objetos o arrays.
+
+> Si en la lista de dependencias se deja vacío el evento se lanzará en cada renderizado.
+
+> Si en la lista de dependencias se deja un array vacío el efecto se lanzará solo cuando el componente sea montado por primera vez (renderizado inicial).
+
+## Función de limpieza
+Una función de limpieza en useEffect es una función que puedes devolver desde el efecto para limpiar o deshacer cualquier cosa que hayas hecho en el efecto. Se ejecutará antes de que el componente se desmonte y antes de cada re-ejecución del efecto si las dependencias cambian.
+
+Un uso común de las funciones de limpieza es para deshacer los efectos secundarios que necesitan limpieza, como los temporizadores o los suscriptores de eventos.
+
+Ejemplo: 
+```javascript
+useEffect(function(){
+  if(!title) return
+  document.title = `Movie | ${title}`
+
+  return function cleanup() {
+    document.title = "usePopcorn"
+  }
+}, [title])
+```
+
+### Operaciones síncronas y asíncronas
+
+1. Sincrono: 
+    * En una operación síncrona, las instrucciones se ejecutan secuencialmente, una tras otra, en el orden en que aparecen en el código.
+    * El hilo de ejecución espera a que una instrucción termine antes de pasar a la siguiente.
+    * Las operaciones síncronas bloquean el hilo de ejecución hasta que se completan, lo que significa que el código subsiguiente no se ejecutará hasta que la operación actual haya finalizado.
+    * Las operaciones síncronas son útiles cuando se necesita realizar tareas que no dependen de eventos externos y que deben completarse antes de continuar con otras tareas.
+
+2. Asíncrono:
+    * En una operación asíncrona, el código no espera a que la operación actual se complete antes de continuar con el código subsiguiente.
+    * Las operaciones asíncronas permiten que otras partes del código continúen ejecutándose mientras se espera que una tarea asíncrona, como una solicitud de red o una operación de lectura/escritura de archivos, se complete.
+    * Las operaciones asíncronas son útiles cuando se necesita realizar tareas que pueden tomar tiempo y no se quiere bloquear el hilo de ejecución mientras esperas que se completen.
+
+> useEffect es una operación asíncrona.
