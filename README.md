@@ -320,6 +320,11 @@ Todos estos eventos se manejan de manera similar en React. Se pasan como props a
 
 Los Hooks son una característica introducida en React 16.8 que permite usar el estado y otras características de React sin escribir una clase. Los Hooks son funciones que permiten "enganchar" el estado de React y el ciclo de vida desde componentes funcionales.
 
+Reglas de los hooks:
+1. Solo pueden ser llamados en el nivel superior de los componentes funcionales o dentro de hooks personalizados, no se deben llamar dentro de bucles, condiciones o funciones anidadas.
+
+2. Solo pueden ser utilizados por componentes funcionales.
+
 Los Hooks más comunes son `useState` y `useEffect`.
 
 1. `useState`: Este Hook te permite agregar estado a los componentes funcionales. Devuelve un par: el valor del estado actual y una función que te permite actualizarlo.
@@ -334,7 +339,9 @@ useEffect(() => {
 }, [contador]); // Solo se vuelve a ejecutar si `contador` cambia
 ```
 
-Existen otros Hooks como useContext, useReducer, useCallback, useMemo, useRef, etc. Además, se puede crear tus propios Hooks personalizados para reutilizar la lógica del estado entre diferentes componentes.
+Existen otros Hooks como useContext, useReducer, useCallback, useMemo, useRef, etc. Además, se puede crear propios Hooks personalizados para reutilizar la lógica del estado entre diferentes componentes.
+
+> Los hooks son esencialmente APIs que exponen algunas de las funcionalidades internas de React.
 
 # State o Estado
 
