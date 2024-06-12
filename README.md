@@ -327,21 +327,55 @@ Reglas de los hooks:
 
 Los Hooks más comunes son `useState` y `useEffect`.
 
-1. `useState`: Este Hook te permite agregar estado a los componentes funcionales. Devuelve un par: el valor del estado actual y una función que te permite actualizarlo.
+1. `useState`: useState es un Hook en React que te permite agregar estado a los componentes funcionales. En las clases de React, el estado es un objeto que se puede cambiar y cuando se cambia, causa una nueva renderización del componente. Con los componentes funcionales, se puede usar el Hook useState para lograr un comportamiento similar.
+
 ```javascript
 const [contador, setContador] = useState(0);
 ```
 
-2. `useEffect`: Este Hook te permite realizar efectos secundarios en los componentes funcionales. Se puedes pensar en useEffect Hook como componentDidMount, componentDidUpdate, y componentWillUnmount combinados.
+2. `useEffect`: useEffect es un Hook en React que te permite realizar efectos secundarios en los componentes funcionales. Los efectos secundarios son operaciones que afectan algo fuera de la función de renderizado, como la realización de solicitudes de red, la manipulación directa del DOM, la lectura y escritura en localStorage, etc. 
+  
+    useEffect se ejecuta después de cada renderizado, a menos que se les pase un segundo argumento, que es un array de dependencias. Si las dependencias no cambian entre renderizados, React sabe que puede saltarse la ejecución del efecto.
+
+    Además, useEffect puede devolver una función de limpieza. Esta función se ejecutará antes de que el componente se desmonte y antes de cada re-ejecución del efecto si las dependencias cambian. Esto es útil para limpiar cualquier efecto secundario que se haya producido.
+
 ```javascript
 useEffect(() => {
   document.title = `Has hecho clic ${contador} veces`;
 }, [contador]); // Solo se vuelve a ejecutar si `contador` cambia
 ```
 
+3. `useRef`: El Hook useRef en React se utiliza para acceder a los elementos del DOM directamente. 
+  
+    Además de acceder a los elementos del DOM, useRef también puede ser útil para mantener cualquier valor mutable. El valor .current de la referencia es mutable y no causará una nueva renderización del componente cuando se cambie. Esto puede ser útil para rastrear valores a lo largo del tiempo sin desencadenar una actualización del componente.
+
+```javascript
+import React, { useRef } from 'react';
+
+function Ejemplo() {
+  const inputRef = useRef(null);
+
+  const enfocarInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={enfocarInput}>Enfocar el input</button>
+    </div>
+  );
+}
+```
+
 Existen otros Hooks como useContext, useReducer, useCallback, useMemo, useRef, etc. Además, se puede crear propios Hooks personalizados para reutilizar la lógica del estado entre diferentes componentes.
 
 > Los hooks son esencialmente APIs que exponen algunas de las funcionalidades internas de React.
+
+### Custom Hooks
+Los Hooks personalizados (Custom Hooks) en React son una característica que te permite extraer la lógica del componente en funciones reutilizables. Un Hook personalizado es una función de JavaScript que comienza con "use" y que puede llamar a otros Hooks.
+
+Los Hooks personalizados pueden encapsular comportamientos complejos y proporcionar una API más simple para su uso en los componentes. También pueden ayudar a reducir la duplicación de código al permitirte compartir la lógica del estado y los efectos entre varios componentes.
 
 # State o Estado
 
