@@ -368,6 +368,40 @@ function Ejemplo() {
 }
 ```
 
+4. `UseReducer`: useReducer es un Hook en React que te permite manejar estados más complejos de una manera más organizada. Es similar a useState pero es más adecuado para manejar el estado que tiene valores interdependientes o cuando tienes transiciones de estado más complejas.
+
+    useReducer toma una función reductora y un estado inicial como argumentos y devuelve el estado actual y una función dispatch. La función reductora toma el estado actual y una acción, y devuelve un nuevo estado.
+
+    useReducer es una buena opción cuando se tiene lógica de estado compleja que implica múltiples subvalores o cuando el siguiente estado depende del anterior. También es útil cuando se tiene una lógica de actualización de estado compleja que podría ser extraída en funciones de manejo de acciones.
+
+```javascript
+import React, { useReducer } from 'react';
+
+const initialState = {count: 0};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
+  );
+}
+```
+
 Existen otros Hooks como useContext, useReducer, useCallback, useMemo, useRef, etc. Además, se puede crear propios Hooks personalizados para reutilizar la lógica del estado entre diferentes componentes.
 
 > Los hooks son esencialmente APIs que exponen algunas de las funcionalidades internas de React.
